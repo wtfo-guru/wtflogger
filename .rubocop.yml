@@ -1,0 +1,17 @@
+---
+require: rubocop-rspec
+AllCops:
+  DisplayCopNames: true
+  TargetRubyVersion: '2.3'
+  # Include:
+  # - "./**/*.rb"
+  Exclude:
+  - Gemfile
+  - .rubocop.yml
+  # - attic/*
+  # - vendor/**/*
+Metrics/LineLength:
+  Description: People have wide screens, use them.
+  Max: 200
+Style/HashSyntax:
+  EnforcedStyle: hash_rockets
