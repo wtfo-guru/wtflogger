@@ -11,7 +11,7 @@ require 'wtflogger'
 #
 # For local testing run like:
 #
-#    ruby -Ilib bin/wtflogger
+#    ruby -Ilib exe/wtflogger
 #
 
 require 'wtflogger'
