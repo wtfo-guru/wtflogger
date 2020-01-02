@@ -38,7 +38,7 @@ module Wtflogger
         case opt
         when '--help'
           puts <<-USG
-        usage: #{@basenm} [-d] [-e] [-f] [-h] [-m] [-n] [-s script] [-v] [-V] message
+        usage: #{@basenm} [-d] [-e] [-f] [-h] [-m] [-n] [-s caller] [-w] [-v] [-V] message
           where:
             -d|--debug         - specify debug mode
             -e|--error         - specify error message type
@@ -46,9 +46,12 @@ module Wtflogger
             -h|--help          - show this message and exit
             -m|--info          - specify info message type
             -n|--notice        - specify notice message type
-            -s|--script caller - specify caller name
+            -s|--script caller - specify caller name (defaults to wtflogger)
+            -w|--warn          - specify warn message type
             -v|--verbose       - add verbosity
             -V|--version       - show version and exit
+
+              default message type is warn
           USG
           exit 0
         when '--loud'
@@ -77,21 +80,37 @@ module Wtflogger
       end
       # rubocop:enable Metrics/BlockLength
 
-      caller = cscript.nil? ? basenm : cscript
+      if ARGV.size.positive?
+        caller = cscript.nil? ? basenm : cscript
 
-      level = if debug
-                'debug'
-              elsif verbose
-                'info'
-              else
-                'warn'
-              end
+        level = if debug
+                  'debug'
+                elsif verbose
+                  'info'
+                else
+                  'warn'
+                end
 
-      loud ||= STDOUT.isatty
-      logger = Scribe.new(:caller => caller, :level => level, :screen => loud)
-      logger.warn "#{basenm} You have been warned."
-      logger.info "#{basenm} You have been informed."
-      logger.debug "#{basenm} Done."
+        loud ||= STDOUT.isatty
+
+        logger = Scribe.new(:caller => caller, :level => level, :screen => loud)
+
+        case type
+        when 4
+          logger.fatal ARGV[0]
+        when 3
+          logger.error ARGV[0]
+        when 2
+          logger.warn ARGV[0]
+        when 1
+          logger.info ARGV[0]
+        else
+          logger.debug ARGV[0]
+        end
+        0
+      else
+        1
+      end
     end
     # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/PerceivedComplexity
