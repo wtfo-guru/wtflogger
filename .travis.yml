@@ -4,7 +4,42 @@ language: ruby
 cache: bundler
 rvm:
   - 2.6.5
-before_install: gem install bundler -v 2.0.2
+script:
+  - 'bundle exec rake $CHECK'
+before_install:
+  - bundle -v
+  - rm -f Gemfile.lock
+  - gem update --system $RUBYGEMS_VERSION
+  - gem --version
+  - bundle -v
+  - gem install bundler -v 2.0.2
+stages:
+  - static
+  - spec
+matrix:
+  fast_finish: true
+  include:
+    -
+      env: CHECK=rubocop
+      stage: static
+    -
+      env: CHECK=spec
+      rvm: 2.4.5
+      stage: spec
+    -
+      env: CHECK=spec
+      rvm: 2.5.3
+      stage: spec
+    -
+      env: CHECK=spec
+      rvm: 2.6.5
+      stage: spec
 env:
   global:
     NEEDS_JOURNAL=no
+branches:
+  only:
+    - master
+    - /^v\d/
+notifications:
+  email: true

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 RSpec.describe Wtflogger do
-  it "has a version number" do
+  it 'has a version number' do
     expect(Wtflogger::VERSION).not_to be nil
   end
 
