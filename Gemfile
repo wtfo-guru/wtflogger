@@ -1,7 +1,9 @@
 source ENV['GEM_SOURCE'] || 'https://rubygems.org'
 
 def check_for_journal
+  return false if ENV['NEEDS_JOURNAL'] == 'no'
   return false unless RUBY_PLATFORM =~ /linux/
+  
   File.directory?('/run/systemd/journal')
 end
 
